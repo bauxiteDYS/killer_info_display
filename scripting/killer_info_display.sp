@@ -6,7 +6,7 @@ public Plugin:myinfo = {
 	name		= "Killer Info Display for NT",
 	author		= "Berni, gH0sTy, Smurfy1982, Snake60",
 	description	= "Displays the health, the armor and the weapon of the player who has killed you",
-	version		= 0.1.0,
+	version		= "0.1.1",
 	url		= "http://forums.alliedmods.net/showthread.php?p=670361",
 };
 
@@ -24,7 +24,7 @@ public OnPluginStart()
 
 public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {	
-	new client	= GetClientOfUserId(GetEventInt(event, "userid"));
+	new client		= GetClientOfUserId(GetEventInt(event, "userid"));
 	new attacker	= GetClientOfUserId(GetEventInt(event, "attacker"));
 
 	if (client == 0 || attacker == 0 || client == attacker) 
@@ -34,27 +34,32 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 
 	decl
 		String:weapon[32],
-		String:unitType[8],
-		String:distanceType[5];
-
+		String:unitType[8];
+	
 	new
 		Float:distance,
-		armor;
 
 	new healthLeft = GetClientHealth(attacker);
 
 	GetEventString(event, "weapon", weapon, sizeof(weapon));		
-	GetConVarString(cvDistancetype, distanceType, sizeof(distanceType));
 
 	SetGlobalTransTarget(client);
 	
-	armor = Client_GetArmor(attacker);
+	armor = GetEntProp(attacker, Prop_Data, "m_ArmorValue");
+	
+	
+	new Float:entityVec[3];
+	new Float:targetVec[3];
+	GetClientAbsOrigin(client, entityVec);
+	GetClientAbsOrigin(attacker, targetVec);
+	distance = GetVectorDistance(entityVec, targetVec);
+	
+	distance = distance * 0.01905;
 
-	distance = Entity_GetDistance(client, attacker);
-	distance = Math_UnitsToMeters(distance);
 	Format(unitType, sizeof(unitType), "%t", "meters");
 	
-	// Print To Panel ?
+	// Print To Panel
+	
 	new Handle:panel= CreatePanel();
 	decl String:buffer[128];
 	Format(buffer, sizeof(buffer), "%t", "panel_killer", attacker);
@@ -65,9 +70,6 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 	
 	Format(buffer, sizeof(buffer), "%t", "panel_health", healthLeft);
-	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
-
-	Format(buffer, sizeof(buffer), "%t", "panel_armor", "armor", armor);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 		
 	Format(buffer, sizeof(buffer), "%t", "panel_distance", distance, unitType);
