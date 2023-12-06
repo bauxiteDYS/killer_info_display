@@ -1,4 +1,7 @@
-**This project is not actively maintained anymore, please fork this**
+# Killer info display Panel for NT:
+
+Forked from Killer Info Display, streamlined for NT.
+
 
 Killer info display
 =================
