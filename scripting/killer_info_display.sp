@@ -1,14 +1,13 @@
 #pragma semicolon 1
 
 #include <sourcemod>
-#include <smlib>
 
 public Plugin:myinfo = {
 	name		= "Killer Info Display for NT",
 	author		= "Berni, gH0sTy, Smurfy1982, Snake60",
 	description	= "Displays the health, the armor and the weapon of the player who has killed you",
 	version		= 0.1.0,
-	url		= "http://forums.alliedmods.net/showthread.php?p=670361"
+	url		= "http://forums.alliedmods.net/showthread.php?p=670361",
 };
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max) 
