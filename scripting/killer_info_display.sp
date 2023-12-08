@@ -7,15 +7,9 @@ public Plugin myinfo =
 	name		= "Killer Info Display for NT",
 	author		= "Berni, gH0sTy, Smurfy1982, Snake60",
 	description	= "Displays the health, the armor and the weapon of the player who has killed you",
-	version		= "0.1.3",
+	version		= "0.1.5",
 	url		= "http://forums.alliedmods.net/showthread.php?p=670361",
 };
-
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
-{ 
-    MarkNativeAsOptional("GetUserMessageType"); 
-    return APLRes_Success; 
-}
 
 public OnPluginStart()
 {	
