@@ -18,8 +18,8 @@ public OnPluginStart()
 
 public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {	
-	int client	= GetClientOfUserId(GetEventInt(event, "userid"));
-	int attacker	= GetClientOfUserId(GetEventInt(event, "attacker"));
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 
 	if (client == 0 || attacker == 0 || client == attacker) 
 	{
