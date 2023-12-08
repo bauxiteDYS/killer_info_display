@@ -2,15 +2,16 @@
 
 #include <sourcemod>
 
-public Plugin:myinfo = {
+public Plugin myinfo = 
+{
 	name		= "Killer Info Display for NT",
 	author		= "Berni, gH0sTy, Smurfy1982, Snake60",
 	description	= "Displays the health, the armor and the weapon of the player who has killed you",
-	version		= "0.1.1",
+	version		= "0.1.3",
 	url		= "http://forums.alliedmods.net/showthread.php?p=670361",
 };
 
-public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max) 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 { 
     MarkNativeAsOptional("GetUserMessageType"); 
     return APLRes_Success; 
@@ -19,60 +20,50 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 public OnPluginStart()
 {	
 	HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
-	LoadTranslations("killer_info_display.phrases");
 }
 
-public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
+public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {	
-	new client		= GetClientOfUserId(GetEventInt(event, "userid"));
-	new attacker	= GetClientOfUserId(GetEventInt(event, "attacker"));
+	int client		= GetClientOfUserId(GetEventInt(event, "userid"));
+	int attacker	= GetClientOfUserId(GetEventInt(event, "attacker"));
 
 	if (client == 0 || attacker == 0 || client == attacker) 
 	{
 		return Plugin_Continue;
 	}
 
-	decl
-		String:weapon[32],
-		String:unitType[8];
+	char weapon[32];
 	
-	new
-		Float:distance,
+	float distance;
 
-	new healthLeft = GetClientHealth(attacker);
+	int healthLeft = GetClientHealth(attacker);
 
 	GetEventString(event, "weapon", weapon, sizeof(weapon));		
-
-	SetGlobalTransTarget(client);
 	
-	armor = GetEntProp(attacker, Prop_Data, "m_ArmorValue");
-	
-	
-	new Float:entityVec[3];
-	new Float:targetVec[3];
+	float entityVec[3];
+	float targetVec[3];
 	GetClientAbsOrigin(client, entityVec);
 	GetClientAbsOrigin(attacker, targetVec);
+	
 	distance = GetVectorDistance(entityVec, targetVec);
 	
 	distance = distance * 0.01905;
-
-	Format(unitType, sizeof(unitType), "%t", "meters");
 	
 	// Print To Panel
 	
-	new Handle:panel= CreatePanel();
-	decl String:buffer[128];
-	Format(buffer, sizeof(buffer), "%t", "panel_killer", attacker);
+	Handle panel= CreatePanel();
+	char buffer[128];
+	Format(buffer, sizeof(buffer), "%N killed you", attacker);
 	SetPanelTitle(panel, buffer);
 	DrawPanelItem(panel, "", ITEMDRAW_SPACER);
 		
-	Format(buffer, sizeof(buffer), "%t", "panel_weapon", weapon);
+	Format(buffer, sizeof(buffer), "Weapon:   %s", weapon);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 	
-	Format(buffer, sizeof(buffer), "%t", "panel_health", healthLeft);
+	Format(buffer, sizeof(buffer), "Health:   %d left", healthLeft);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 		
-	Format(buffer, sizeof(buffer), "%t", "panel_distance", distance, unitType);
+	Format(buffer, sizeof(buffer), "Distance:   %.1f Meters", distance);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 		
 	DrawPanelItem(panel, "", ITEMDRAW_SPACER);
@@ -84,4 +75,4 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 	return Plugin_Continue;
 }
 
-public Handler_DoNothing(Handle:menu, MenuAction:action, param1, param2) {}
+public Handler_DoNothing(Menu menu, MenuAction action, int param1, int param2) {}
