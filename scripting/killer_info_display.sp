@@ -1,13 +1,21 @@
 #pragma semicolon 1
 
 #include <sourcemod>
+#include <neotokyo>
+
+char class_name[][] = {
+	"-",
+	"Recon",
+	"Assault",
+	"Support"
+};
 
 public Plugin myinfo = 
 {
 	name		= "Killer Info Display for NT",
 	author		= "Berni, gH0sTy, Smurfy1982, Snake60",
 	description	= "Displays the health, the armor and the weapon of the player who has killed you",
-	version		= "0.1.5",
+	version		= "0.1.7",
 	url		= "http://forums.alliedmods.net/showthread.php?p=670361",
 };
 
@@ -55,6 +63,9 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 	
 	Format(buffer, sizeof(buffer), "Health:   %d left", healthLeft);
+	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
+	
+	Format(buffer, sizeof(buffer), "Class: %s", class_name[GetPlayerClass(attacker)]);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 		
 	Format(buffer, sizeof(buffer), "Distance:   %.1f Meters", distance);
