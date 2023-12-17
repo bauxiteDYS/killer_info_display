@@ -12,10 +12,10 @@ char class_name[][] = {
 
 public Plugin myinfo = 
 {
-	name		= "Killer Info Display for NT",
-	author		= "Berni, gH0sTy, Smurfy1982, Snake60",
-	description	= "Displays the health, the armor and the weapon of the player who has killed you",
-	version		= "0.1.7",
+	name		= "Killer Info Display for NT and streamlined",
+	author		= "Berni, gH0sTy, Smurfy1982, Snake60, bauxite",
+	description	= "Displays the name, weapon, health and class of player that killed you",
+	version		= "0.1.9",
 	url		= "http://forums.alliedmods.net/showthread.php?p=670361",
 };
 
@@ -29,7 +29,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 
-	if (client == 0 || attacker == 0 || client == attacker) 
+	if (client == 0 || attacker == 0 || client == attacker)
 	{
 		return Plugin_Continue;
 	}
@@ -57,21 +57,21 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 	char buffer[128];
 	Format(buffer, sizeof(buffer), "%N killed you", attacker);
 	SetPanelTitle(panel, buffer);
-	DrawPanelItem(panel, "", ITEMDRAW_SPACER);
+	DrawPanelItem(panel, "", ITEMDRAW_SPACER|ITEMDRAW_RAWLINE);
 		
 	Format(buffer, sizeof(buffer), "Weapon:   %s", weapon);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 	
-	Format(buffer, sizeof(buffer), "Health:   %d left", healthLeft);
+	Format(buffer, sizeof(buffer), "Health:      %d left", healthLeft);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 	
-	Format(buffer, sizeof(buffer), "Class: %s", class_name[GetPlayerClass(attacker)]);
+	Format(buffer, sizeof(buffer), "Class:        %s", class_name[GetPlayerClass(attacker)]);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 		
-	Format(buffer, sizeof(buffer), "Distance:   %.1f Meters", distance);
+	Format(buffer, sizeof(buffer), "Distance:  %.1f Meters", distance);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 		
-	DrawPanelItem(panel, "", ITEMDRAW_SPACER);
+	DrawPanelItem(panel, "", ITEMDRAW_SPACER|ITEMDRAW_RAWLINE);
 
 	SetPanelCurrentKey(panel, 10);
 	SendPanelToClient(panel, client, Handler_DoNothing, 20);
