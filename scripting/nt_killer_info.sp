@@ -4,7 +4,7 @@
 #include <neotokyo>
 
 char class_name[][] = {
-	"-",
+	"Unknown",
 	"Recon",
 	"Assault",
 	"Support"
@@ -15,8 +15,8 @@ public Plugin myinfo =
 	name		= "Killer Info Display for NT and streamlined",
 	author		= "Berni, gH0sTy, Smurfy1982, Snake60, bauxite",
 	description	= "Displays the name, weapon, health and class of player that killed you",
-	version		= "0.1.9",
-	url		= "http://forums.alliedmods.net/showthread.php?p=670361",
+	version		= "0.2.0",
+	url		= "https://github.com/bauxiteDYS/SM-NT-Killer-Info-Display/tree/NT",
 };
 
 public OnPluginStart()
@@ -42,12 +42,12 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 
 	GetEventString(event, "weapon", weapon, sizeof(weapon));		
 	
-	float entityVec[3];
-	float targetVec[3];
-	GetClientAbsOrigin(client, entityVec);
-	GetClientAbsOrigin(attacker, targetVec);
+	float clientVec[3];
+	float attackerVec[3];
+	GetClientAbsOrigin(client, clientVec);
+	GetClientAbsOrigin(attacker, attackerVec);
 	
-	distance = GetVectorDistance(entityVec, targetVec);
+	distance = GetVectorDistance(clientVec, attackerVec);
 	
 	distance = distance * 0.01905;
 	
@@ -62,7 +62,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 	Format(buffer, sizeof(buffer), "Weapon:   %s", weapon);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 	
-	Format(buffer, sizeof(buffer), "Health:      %d left", healthLeft);
+	Format(buffer, sizeof(buffer), "Health:      %d HP", healthLeft);
 	DrawPanelItem(panel, buffer, ITEMDRAW_DEFAULT);
 	
 	Format(buffer, sizeof(buffer), "Class:        %s", class_name[GetPlayerClass(attacker)]);
