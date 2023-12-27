@@ -15,7 +15,7 @@ public Plugin myinfo =
 	name		= "Killer Info Display for NT and streamlined",
 	author		= "Berni, gH0sTy, Smurfy1982, Snake60, bauxite",
 	description	= "Displays the name, weapon, health and class of player that killed you",
-	version		= "0.2.0",
+	version		= "0.2.1",
 	url		= "https://github.com/bauxiteDYS/SM-NT-Killer-Info-Display/tree/NT",
 };
 
@@ -54,7 +54,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 	// Print To Panel
 	
 	Handle panel= CreatePanel();
-	char buffer[128];
+	char buffer[64];
 	Format(buffer, sizeof(buffer), "%N killed you", attacker);
 	SetPanelTitle(panel, buffer);
 	DrawPanelItem(panel, "", ITEMDRAW_SPACER|ITEMDRAW_RAWLINE);
