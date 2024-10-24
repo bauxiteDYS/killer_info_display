@@ -1,10 +1,9 @@
-# Killer Info for NT:
+# <ins>Killer Info for NT:</ins>
 
 Forked from Killer Info Display, streamlined for NT.
 
 
-Killer info display:
-=================
+# <ins>Killer info display:</ins>
 
 Plugin for Sourcemod.
 
