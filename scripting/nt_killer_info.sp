@@ -5,9 +5,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+
 #define DEBUG false
 
-//ConVar cvarEnabled;
+ConVar cvarEnabled;
+ConVar cvarTextRelay;
+ConVar cvarDuration;
+bool g_enabled = true;
+bool g_text = true;
+int g_duration = 10;
 Cookie KillerCookie;
 static bool g_wantsText[NEO_MAXPLAYERS+1];
 static char className[][] = {
@@ -18,10 +24,10 @@ static char className[][] = {
 };
 
 public Plugin myinfo = {
-	name = "NT Killer Info Display, streamlined for NT and with chat relay",
+	name = "NT Killer Info",
 	author = "Berni, gH0sTy, Smurfy1982, Snake60, bauxite",
 	description = "Displays the name, weapon, health and class of player that killed you, optionally relays info to chat",
-	version = "0.2.2",
+	version = "0.2.5",
 	url = "http://forums.alliedmods.net/showthread.php?p=670361",
 };
 
@@ -30,6 +36,41 @@ public void OnPluginStart()
 	HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
 	KillerCookie = RegClientCookie("killer_info_text", "killer info text preference", CookieAccess_Public);
 	SetCookieMenuItem(KillerTextMenu, KillerCookie, "killer info text");
+}
+
+public void OnAllPluginsLoaded()
+{
+	cvarEnabled = FindConVar("kid_printtopanel");
+	
+	if(cvarEnabled != null)
+	{
+		SetFailState("[NT Killer Info] Error: A different Killer Info plugin is loaded");
+	}
+	
+	cvarEnabled = CreateConVar("kid_printtopanel", "1", "Enable Killer Info Panel display",_, true, 0.0, true, 1.0);
+	cvarTextRelay = CreateConVar("kid_text_relay", "1", "Enable Text Relay",_, true, 0.0, true, 1.0);
+	cvarDuration = CreateConVar("kid_panel_duration", "10", "Panel duration in seconds",_, true, 1.0, true, 15.0);
+	HookConVarChange(cvarEnabled, CVARS_Changed);
+	HookConVarChange(cvarTextRelay, CVARS_Changed);
+	HookConVarChange(cvarDuration, CVARS_Changed);
+	AutoExecConfig(true);
+}
+
+public void OnConfigsExecuted()
+{
+	UpdateCvars();
+}
+
+void CVARS_Changed(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	UpdateCvars();
+}
+
+void UpdateCvars()
+{
+	g_enabled = cvarEnabled.BoolValue;
+	g_text = cvarTextRelay.BoolValue;
+	g_duration = cvarDuration.IntValue;
 }
 
 public void KillerTextMenu(int client, CookieMenuAction action, any info, char[] buffer, int maxlen)
@@ -96,10 +137,12 @@ public void OnClientCookiesCached(int client)
 	}
 }
 
-public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
+public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {	
-	// add convar so plugins can disable killer info
-	// add convar so text relay can be disabled, maybe even duration of panel
+	if(!g_enabled)
+	{
+		return;
+	}
 	
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -110,7 +153,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 	if (client == 0 || attacker == 0 || client == attacker)
 	#endif
 	{
-		return Plugin_Continue;
+		return;
 	}
 
 	int healthLeft = GetClientHealth(attacker);
@@ -150,15 +193,15 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 
 	//SetPanelCurrentKey(panel, 2);
 	
-	panel.Send(client, Handler_DoNothing, 10);
+	panel.Send(client, Handler_DoNothing, g_duration);
 	delete panel;
 
-	if (g_wantsText[client] == true)
+	if (g_wantsText[client] == true && g_text)
 	{
 		ClientCommand(client, "say_team %d %s %s", healthLeft, className[GetPlayerClass(attacker)], weapon);
 	}
 	
-	return Plugin_Continue;
+	return;
 }
 
 public int Handler_DoNothing(Menu menu, MenuAction action, int param1, int param2) 
