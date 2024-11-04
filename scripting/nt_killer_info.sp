@@ -27,7 +27,7 @@ public Plugin myinfo = {
 	name = "NT Killer Info",
 	author = "Berni, gH0sTy, Smurfy1982, Snake60, bauxite",
 	description = "Displays the name, weapon, health and class of player that killed you, optionally relays info to chat",
-	version = "0.2.5",
+	version = "0.2.6",
 	url = "http://forums.alliedmods.net/showthread.php?p=670361",
 };
 
@@ -40,9 +40,9 @@ public void OnPluginStart()
 
 public void OnAllPluginsLoaded()
 {
-	cvarEnabled = FindConVar("kid_printtopanel");
+	ConVar cvarKIDVersion = FindConVar("kid_version");
 	
-	if(cvarEnabled != null)
+	if(cvarKIDVersion != null) // convars persist after unload, so late loads might fail if they depend on convars existence
 	{
 		SetFailState("[NT Killer Info] Error: A different Killer Info plugin is loaded");
 	}
