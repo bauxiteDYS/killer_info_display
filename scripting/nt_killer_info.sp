@@ -11,9 +11,10 @@
 ConVar cvarEnabled;
 ConVar cvarTextRelay;
 ConVar cvarDuration;
-bool g_enabled = true;
-bool g_text = true;
-int g_duration = 10;
+bool g_enabled;
+bool g_text;
+bool g_lateLoad;
+int g_duration;
 Cookie KillerCookie;
 static bool g_wantsText[NEO_MAXPLAYERS+1];
 static char className[][] = {
@@ -27,9 +28,15 @@ public Plugin myinfo = {
 	name = "NT Killer Info",
 	author = "Berni, gH0sTy, Smurfy1982, Snake60, bauxite",
 	description = "Displays the name, weapon, health and class of player that killed you, optionally relays info to chat",
-	version = "0.2.6",
-	url = "http://forums.alliedmods.net/showthread.php?p=670361",
+	version = "0.2.7",
+	url = "",
 };
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	g_lateLoad = late;
+	return APLRes_Success;
+}
 
 public void OnPluginStart()
 {	
@@ -40,9 +47,10 @@ public void OnPluginStart()
 
 public void OnAllPluginsLoaded()
 {
+	PrintToServer("all plugins--------");
 	ConVar cvarKIDVersion = FindConVar("kid_version");
 	
-	if(cvarKIDVersion != null) // convars persist after unload, so late loads might fail if they depend on convars existence
+	if(cvarKIDVersion != null) // convars persist after unload, so re-loads might fail if they depend on convars existence
 	{
 		SetFailState("[NT Killer Info] Error: A different Killer Info plugin is loaded");
 	}
@@ -54,6 +62,17 @@ public void OnAllPluginsLoaded()
 	HookConVarChange(cvarTextRelay, CVARS_Changed);
 	HookConVarChange(cvarDuration, CVARS_Changed);
 	AutoExecConfig(true);
+	
+	if(g_lateLoad) // OnAllPluginsLoaded is called on late load
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				OnClientCookiesCached(client);
+			}
+		}
+	}
 }
 
 public void OnConfigsExecuted()
@@ -196,7 +215,7 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
 	panel.Send(client, Handler_DoNothing, g_duration);
 	delete panel;
 
-	if (g_wantsText[client] == true && g_text)
+	if (g_text && g_wantsText[client] == true)
 	{
 		ClientCommand(client, "say_team %d %s %s", healthLeft, className[GetPlayerClass(attacker)], weapon);
 	}
