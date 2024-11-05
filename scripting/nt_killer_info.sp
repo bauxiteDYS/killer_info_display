@@ -1,6 +1,6 @@
 #include <sourcemod>
-#include <neotokyo>
 #include <clientprefs>
+#include <neotokyo>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -26,10 +26,10 @@ static char className[][] = {
 
 public Plugin myinfo = {
 	name = "NT Killer Info",
-	author = "Berni, gH0sTy, Smurfy1982, Snake60, bauxite",
+	author = "bauxite, credits to Berni, gH0sTy, Smurfy1982, Snake60",
 	description = "Displays the name, weapon, health and class of player that killed you, optionally relays info to chat",
 	version = "0.2.7",
-	url = "",
+	url = "https://github.com/bauxiteDYS/SM-NT-Killer-Info",
 };
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -39,7 +39,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 }
 
 public void OnPluginStart()
-{	
+{		
 	HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
 	KillerCookie = RegClientCookie("killer_info_text", "killer info text preference", CookieAccess_Public);
 	SetCookieMenuItem(KillerTextMenu, KillerCookie, "killer info text");
@@ -56,7 +56,7 @@ public void OnAllPluginsLoaded()
 	
 	cvarEnabled = CreateConVar("kid_printtopanel", "1", "Enable Killer Info Panel display",_, true, 0.0, true, 1.0);
 	cvarTextRelay = CreateConVar("kid_text_relay", "1", "Enable Text Relay",_, true, 0.0, true, 1.0);
-	cvarDuration = CreateConVar("kid_panel_duration", "10", "Panel duration in seconds",_, true, 1.0, true, 15.0);
+	cvarDuration = CreateConVar("kid_panel_duration", "9", "Panel duration in seconds",_, true, 1.0, true, 15.0);
 	HookConVarChange(cvarEnabled, CVARS_Changed);
 	HookConVarChange(cvarTextRelay, CVARS_Changed);
 	HookConVarChange(cvarDuration, CVARS_Changed);
@@ -105,7 +105,6 @@ public Action KillerCustomMenu(int client)
 	menu.AddItem("on", "Enable");
 	menu.AddItem("off", "Disable");
 	menu.Display(client, MENU_TIME_FOREVER);
-
 	return Plugin_Handled;
 }
 
