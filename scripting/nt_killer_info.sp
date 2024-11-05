@@ -39,7 +39,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 }
 
 public void OnPluginStart()
-{		
+{
 	HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
 	KillerCookie = RegClientCookie("killer_info_text", "killer info text preference", CookieAccess_Public);
 	SetCookieMenuItem(KillerTextMenu, KillerCookie, "killer info text");
