@@ -47,7 +47,6 @@ public void OnPluginStart()
 
 public void OnAllPluginsLoaded()
 {
-	PrintToServer("all plugins--------");
 	ConVar cvarKIDVersion = FindConVar("kid_version");
 	
 	if(cvarKIDVersion != null) // convars persist after unload, so re-loads might fail if they depend on convars existence
