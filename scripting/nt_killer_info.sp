@@ -28,7 +28,7 @@ public Plugin myinfo = {
 	name = "NT Killer Info",
 	author = "bauxite, credits to Berni, gH0sTy, Smurfy1982, Snake60",
 	description = "Displays the name, weapon, health and class of player that killed you, optionally relays info to chat",
-	version = "0.2.7",
+	version = "0.3.0",
 	url = "https://github.com/bauxiteDYS/SM-NT-Killer-Info",
 };
 
@@ -182,7 +182,7 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
 	float attackerVec[3];
 	GetClientAbsOrigin(client, clientVec);
 	GetClientAbsOrigin(attacker, attackerVec);
-	float distance = GetVectorDistance(clientVec, attackerVec) * 0.01905;
+	float distance = GetVectorDistance(clientVec, attackerVec) * 0.0254;
 	
 	// Print To Panel, Handle style = GetMenuStyleHandle(MenuStyle_Radio);
 	
